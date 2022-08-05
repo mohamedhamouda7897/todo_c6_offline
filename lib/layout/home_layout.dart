@@ -21,6 +21,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         title: Text('Todo Route',style: Theme.of(context).textTheme.headline1,),
       ),
@@ -62,7 +63,14 @@ class _HomeLayoutState extends State<HomeLayout> {
   }
   OpenBottomSheetToAddTask(){
     showModalBottomSheet(context: context, builder: (context){
-      return AddTaskBottomSheet();
-    });
+      return Container(
+          child: Padding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
+            child: AddTaskBottomSheet(),
+          ));
+    },
+    isScrollControlled: true,
+    );
   }
 }
