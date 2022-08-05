@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_c6_offline/Models/task_model.dart';
+import 'package:todo_c6_offline/shared/components/components.dart';
 import 'package:todo_c6_offline/shared/styles/colors.dart';
+
+import '../../utils/firebase_firestore.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
 
@@ -12,6 +16,8 @@ class AddTaskBottomSheet extends StatefulWidget {
 class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
   var selectedDate=DateTime.now();
   var formKey=GlobalKey<FormState>();
+  String title='';
+  String desc='';
   @override
   Widget build(BuildContext context) {
 
@@ -37,6 +43,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
               TextFormField(
 
                 decoration: InputDecoration(labelText: 'Title'),
+                onChanged: (text){
+                  title=text;
+                },
                 validator: (text) {
                   if (text == null || text.isEmpty) {
                     return 'Please enter task title';
@@ -49,6 +58,9 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                 minLines: 4,
 
                 decoration: InputDecoration(labelText: 'Description'),
+                onChanged: (text){
+                  desc=text;
+                },
                 validator: (text) {
                   if (text == null || text.isEmpty) {
                     return 'Please enter task description';
@@ -80,7 +92,21 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             ),
             ElevatedButton(onPressed: (){
               if(formKey.currentState!.validate()){
+                TaskModel tas=TaskModel(title: title, description:desc ,
+                    isDone: true,
+                    selectedDate:selectedDate.microsecondsSinceEpoch);
+                AddTaskToFireStore(tas).then((value) {
+                  showLoading(context, 'Loading...');
+                  hideBottomSheet(context);
+                  showMessage(context, 'Successfully Added', 'Ok', () {
+                    hideBottomSheet(context);
+                    hideBottomSheet(context);
+                  });
 
+                }).catchError((error){
+
+                  print(error);
+                });
 
               }
 
