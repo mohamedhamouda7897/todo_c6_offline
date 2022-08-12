@@ -92,20 +92,23 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
             ),
             ElevatedButton(onPressed: (){
               if(formKey.currentState!.validate()){
-                TaskModel tas=TaskModel(title: title, description:desc ,
-                    isDone: true,
-                    selectedDate:selectedDate.microsecondsSinceEpoch);
-                AddTaskToFireStore(tas).then((value) {
-                  showLoading(context, 'Loading...');
-                  hideBottomSheet(context);
-                  showMessage(context, 'Successfully Added', 'Ok', () {
-                    hideBottomSheet(context);
-                    hideBottomSheet(context);
-                  });
-
-                }).catchError((error){
-
-                  print(error);
+                TaskModel tas = TaskModel(
+                        title: title,
+                        description: desc,
+                        isDone: false, // Y M D H  M S
+                        selectedDate: DateUtils.dateOnly(selectedDate)
+                            .microsecondsSinceEpoch);
+                    print(
+                        'Route ${DateUtils.dateOnly(selectedDate).microsecondsSinceEpoch}');
+                    AddTaskToFireStore(tas).then((value) {
+                      showLoading(context, 'Loading...');
+                      hideBottomSheet(context);
+                      showMessage(context, 'Successfully Added', 'Ok', () {
+                        hideBottomSheet(context);
+                        hideBottomSheet(context);
+                      });
+                    }).catchError((error) {
+                      print(error);
                 });
 
               }
